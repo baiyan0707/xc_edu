@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.manage_course.dao.CategoryMapper">
+    <resultMap id="categoryMap" type="com.xuecheng.framework.domain.course.ext.CategoryNode">
+        <id property="id" column="one_cid"></id>
+        <result property="name" column="one_cname"></result>
+        <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+            <id property="id" column="two_cid"></id>
+            <result property="name" column="two_cname"></result>
+            <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+                <id property="id" column="three_cid"></id>
+                <result property="name" column="three_cname"></result>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="fndAllClassify" resultType="java.util.List" resultMap="categoryMap">
+        SELECT
+        a.`id` one_cid,
+        a.`name` one_cname,
+        b.`id` two_cid,
+        b.`name` two_cname,
+        c.`id` three_cid,
+        c.`name` three_cname
+        FROM
+        category a
+        LEFT JOIN category b
+        ON b.`parentid` = a.`id`
+        LEFT JOIN category c
+        ON c.`parentid` = b.`id`
+        WHERE a.`parentid` = '0'
+        ORDER BY a.orderby,
+        b.orderby,
+        c.orderby
+    </select>
+</mapper>
